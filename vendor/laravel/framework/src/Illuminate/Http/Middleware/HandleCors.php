@@ -45,17 +45,24 @@ class HandleCors
      */
     public function handle($request, Closure $next)
     {
-        if (! $this->hasMatchingPath($request)) {
+        // Verifica si la solicitud proviene del origen permitido
+        if (! $this->isAllowedOrigin($request)) {
             return $next($request);
         }
 
-        $this->cors->setOptions($this->container['config']->get('cors', []));
+        // Configura las opciones de CORS específicas para la ruta http://localhost:5173
+        $this->cors->setOptions([
+            'allowed_origins' => ['http://localhost:5173'], // Solo permitir este origen
+            'allowed_methods' => ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Métodos permitidos
+            'allowed_headers' => ['Content-Type', 'X-Requested-With', 'Authorization'], // Encabezados permitidos
+            'exposed_headers' => ['Authorization'], // Encabezados expuestos
+            'max_age' => 3600, // Tiempo de cache de preflight
+            'supports_credentials' => true, // Permitir cookies y credenciales
+        ]);
 
         if ($this->cors->isPreflightRequest($request)) {
             $response = $this->cors->handlePreflightRequest($request);
-
             $this->cors->varyHeader($response, 'Access-Control-Request-Method');
-
             return $response;
         }
 
@@ -69,26 +76,14 @@ class HandleCors
     }
 
     /**
-     * Get the path from the configuration to determine if the CORS service should run.
+     * Check if the request comes from an allowed origin.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
-    protected function hasMatchingPath(Request $request): bool
+    protected function isAllowedOrigin(Request $request): bool
     {
-        $paths = $this->getPathsByHost($request->getHost());
-
-        foreach ($paths as $path) {
-            if ($path !== '/') {
-                $path = trim($path, '/');
-            }
-
-            if ($request->fullUrlIs($path) || $request->is($path)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $request->header('Origin') === 'http://localhost:5173';
     }
 
     /**
