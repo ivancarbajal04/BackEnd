@@ -74,7 +74,7 @@ AWS_USE_PATH_STYLE_ENDPOINT=false
 VITE_APP_NAME="${APP_NAME}"
 
 4. Generar claves
-- Ejecutar en la consola del proyecto 'artisan key:generate', esto va a servir para generar los token, autenticacion y sesiones.
+- Ejecutar en la consola del proyecto 'php artisan key:generate', esto va a servir para generar los token, autenticacion y sesiones.
 
 5. Migrar las bases de datos
 - Para poder tener la base de datos utilizada en el proyecto, en la consola debera ejecutar 'php artisan migrate', y para obtener los datos de prueba 'php artisan db:seed'

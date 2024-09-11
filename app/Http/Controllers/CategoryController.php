@@ -55,11 +55,27 @@ class CategoryController extends Controller
     /**
      * Remove the specified category from storage.
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         $category = Category::findOrFail($id);
+    
+        // Verificar si el parámetro de forzar eliminación está presente
+        $forceDelete = $request->input('forceDelete', false);
+    
+        // Verificar si hay productos relacionados con esta categoría
+        $relatedProductsCount = $category->products()->count();
+    
+        if ($relatedProductsCount > 0 && !$forceDelete) {
+            return response()->json([
+                'message' => "La categoría tiene $relatedProductsCount productos relacionados. ¿Deseas eliminarla de todos modos?",
+                'relatedProductsCount' => $relatedProductsCount,
+            ], 400);
+        }
+    
+        // Si se permite la eliminación o no hay productos relacionados, elimina la categoría
         $category->delete();
-
-        return response()->json(['message' => 'Category deleted successfully']);
+    
+        return response()->json(['message' => 'Categoría eliminada exitosamente'], 200);
     }
+    
 }
