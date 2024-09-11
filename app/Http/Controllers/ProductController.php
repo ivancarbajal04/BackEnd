@@ -11,9 +11,22 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Product::with('category')->orderBy('created_at', 'desc')->paginate(10);
+        $perPage = $request->input('per_page', 10); // Número de elementos por página
+        $sortBy = $request->input('sortBy', 'created_at'); // Campo por el que ordenar (por defecto es 'created_at')
+        $order = $request->input('order', 'desc'); // Orden (por defecto es 'desc')
+
+        // Validar el campo de ordenación y el orden
+        $validSortBy = ['name', 'price', 'created_at']; // Campos válidos para ordenar
+        if (!in_array($sortBy, $validSortBy)) {
+            $sortBy = 'created_at'; // Valor por defecto si el campo no es válido
+        }
+        $order = $order === 'asc' ? 'asc' : 'desc'; // Validar que el orden sea 'asc' o 'desc'
+
+        return Product::with('category')
+            ->orderBy($sortBy, $order)
+            ->paginate($perPage);
     }
 
     /**
