@@ -78,6 +78,7 @@ VITE_APP_NAME="${APP_NAME}"
 
 5. Migrar las bases de datos
 - Para poder tener la base de datos utilizada en el proyecto, en la consola debera ejecutar 'php artisan migrate', y para obtener los datos de prueba 'php artisan db:seed'
+- Recorda que para este paso debes tener instalado y ejecutado xampp (apache y mysql)
 
 6. Verificacion
 - Ya deberia estar listo el servidor para ejecutarse con 'php artisan serve'
