@@ -13,16 +13,15 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $perPage = $request->input('per_page', 10); // Número de elementos por página
-        $sortBy = $request->input('sortBy', 'created_at'); // Campo por el que ordenar (por defecto es 'created_at')
-        $order = $request->input('order', 'desc'); // Orden (por defecto es 'desc')
+        $perPage = $request->input('per_page', 10);
+        $sortBy = $request->input('sortBy', 'created_at');
+        $order = $request->input('order', 'desc');
 
-        // Validar el campo de ordenación y el orden
-        $validSortBy = ['name', 'price', 'created_at']; // Campos válidos para ordenar
+        $validSortBy = ['name', 'price', 'created_at'];
         if (!in_array($sortBy, $validSortBy)) {
-            $sortBy = 'created_at'; // Valor por defecto si el campo no es válido
+            $sortBy = 'created_at';
         }
-        $order = $order === 'asc' ? 'asc' : 'desc'; // Validar que el orden sea 'asc' o 'desc'
+        $order = $order === 'asc' ? 'asc' : 'desc';
 
         return Product::with('category')
             ->orderBy($sortBy, $order)
