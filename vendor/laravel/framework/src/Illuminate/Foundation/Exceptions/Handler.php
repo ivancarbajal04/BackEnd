@@ -756,10 +756,18 @@ class Handler implements ExceptionHandlerContract
      * @param  \Illuminate\Validation\ValidationException  $exception
      * @return \Illuminate\Http\JsonResponse
      */
+    // protected function invalidJson($request, ValidationException $exception)
+    // {
+    //     return response()->json([
+    //         'message' => $exception->getMessage(),
+    //         'errors' => $exception->errors(),
+    //     ], $exception->status);
+    // }
+
     protected function invalidJson($request, ValidationException $exception)
     {
         return response()->json([
-            'message' => $exception->getMessage(),
+            'message' => 'Los datos proporcionados no son válidos',
             'errors' => $exception->errors(),
         ], $exception->status);
     }
